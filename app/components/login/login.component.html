@@ -1,0 +1,11 @@
+<div class="login-component">
+	<span>{{ loginText }}</span>
+
+	<img *ngIf="loggedIn" src="{{profileImgUrl}}" class="profile-img"
+		     alt="profile-img">
+
+
+	<button type="button" (click)="loginWithGoogle()">Google Login</button>
+	<button type="button" *ngIf="loggedIn" (click)="logout()">Logout</button>
+
+</div>
