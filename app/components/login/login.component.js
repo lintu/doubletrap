@@ -21,13 +21,11 @@ var LoginComponent = (function () {
         this.userData = userData;
         this.af.auth.subscribe(function (auth) {
             if (auth) {
-                _this.loggedIn = true;
                 userData.setUserId(auth.auth.uid);
                 _this.loginText = auth.auth.displayName;
                 _this.profileImgUrl = auth.auth.photoURL;
             }
             else {
-                _this.loggedIn = false;
                 _this.loginText = 'You are not logged in';
                 userData.setUserId('');
             }

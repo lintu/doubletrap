@@ -11,7 +11,8 @@
         'angular2-in-memory-web-api': 'node_modules/angular2-in-memory-web-api',
         'rxjs':                       'node_modules/rxjs',
         'firebase': 'node_modules/firebase/firebase.js',
-        'angularfire2': 'node_modules/angularfire2'
+        'angularfire2': 'node_modules/angularfire2',
+        'angular2-masonry': 'node_modules/angular2-masonry'
     };
 
     // packages tells the System loader how to load when no filename and/or no extension
@@ -19,9 +20,13 @@
         'app':                        { main: 'main.js',  defaultExtension: 'js' },
         'rxjs':                       { defaultExtension: 'js' },
         'angular2-in-memory-web-api': { main: 'index.js', defaultExtension: 'js' },
-        'angularfire2':               { main: 'angularfire2.js', defaultExtension: 'js'}
+        'angularfire2':               { main: 'angularfire2.js', defaultExtension: 'js'},
+        'angular2-masonry': {main: 'index', defaultExtension: 'js'}
     };
 
+    var paths = {
+        "masonry-layout": "node_modules/masonry-layout/dist/masonry.pkgd.js"
+    };
     var ngPackageNames = [
         'common',
         'compiler',
@@ -49,6 +54,7 @@
     var config = {
         map: map,
         packages: packages
+
     };
     System.config(config);
 })(this);

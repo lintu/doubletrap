@@ -12,11 +12,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
+var Subject_1 = require('rxjs/Subject');
 var UserData = (function () {
     function UserData() {
+        this.isLoggedIn = new Subject_1.Subject();
     }
     UserData.prototype.setUserId = function (userId) {
         this.userId = userId;
+        this.isLoggedIn.next(!(userId === ''));
+        debugger;
     };
     UserData.prototype.getUserId = function () {
         return this.userId;

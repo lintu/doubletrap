@@ -1,3 +1,7 @@
 <div>
-    Song list comes list
+    <ul class="">
+        <li *ngFor="let song of songList | async" class="">
+           {{song.title}} | {{song.artist}}
+        </li>
+    </ul>
 </div>

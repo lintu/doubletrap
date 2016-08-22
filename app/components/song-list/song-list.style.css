@@ -1,0 +1,70 @@
+/*Grid*/
+.grid {
+    position: relative;
+    min-height: 100vh;
+    margin: 0 auto;
+    padding: 0;
+    list-style: none;
+    max-width: 1200px;
+}
+.grid-item {
+    position: relative;
+    width: 25%;
+    min-width: 280px;
+    margin: 0 0 2em;
+    padding: 1em 4em 0;
+}
+.grid-link {
+    position: relative;
+    display: block;
+    color: #474283;
+    -webkit-perspective: 1200px;
+    perspective: 1200px;
+    cursor: pointer;
+    text-decoration: none !important;
+}
+.grid-link:hover {
+    color: #474283;
+    outline: none;
+}
+
+.img-wrap {
+    position: relative;
+}
+.img {
+    display: block;
+}
+
+.grid-img {
+    position: relative;
+    max-width: 100%;
+    box-shadow: 2px 16px 26px 0px rgba(36, 33, 69, 0.3);
+    -webkit-transform: translate3d(0,0,0);
+    transform: translate3d(0,0,0);
+}
+
+.artist {
+    font-size: 0.85em;
+    font-weight: normal;
+    margin: 1em 0 0.5em;
+}
+
+.title {
+    font-size: 1em;
+    font-weight: bold;
+    margin: 0 0 0 3em;
+    white-space: nowrap;
+}
+
+.year {
+    font-size: 0.85em;
+    position: absolute;
+    z-index: 10;
+    right: 0;
+    margin: -1em -1em 0 0;
+    padding: 0.3em 0.5em;
+    color: #fff;
+    border: 2px solid;
+    -webkit-transform: translate3d(0,0,0);
+    transform: translate3d(0,0,0);
+}

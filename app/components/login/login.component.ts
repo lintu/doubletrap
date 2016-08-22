@@ -14,16 +14,13 @@ import { UserData} from './../login/user-data.service';
 export class LoginComponent {
     loginText: string;
     profileImgUrl: string;
-    loggedIn: boolean;
     constructor(private af: AngularFire, private userData: UserData) {
         this.af.auth.subscribe(auth => {
             if(auth) {
-                this.loggedIn = true;
                 userData.setUserId(auth.auth.uid);
                 this.loginText = auth.auth.displayName;
                 this.profileImgUrl = auth.auth.photoURL;
             } else {
-                this.loggedIn = false;
                 this.loginText = 'You are not logged in';
                 userData.setUserId('');
             }

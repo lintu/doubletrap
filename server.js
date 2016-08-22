@@ -40,8 +40,18 @@ app.post('/upload', function (req, res, next) {
     upload(req, res, function () {
         id3({ file: req.file.destination + req.file.filename, type: id3.OPEN_LOCAL }, function (err, tags) {
             tags.songId = req.file.filename;
-            res.json(tags);
-            
+
+
+            if(tags.v2.image.data) {
+                var imageUrl = __dirname;
+                var buffer = new Buffer(new Uint8Array(tags.v2.image.data) );
+                fs.writeFile('./' + req.file.filename + '.' + tags.v2.image.mime.split('/')[1], buffer, 'binary', function(){
+                    res.json(tags);
+                });
+            } else {
+                res.json(tags);
+            }
+
             // tags.url = req.file.destination + req.file.filename;
             // var base64Data = req.body.imageDataUri;
             // var imageUrl = __dirname + '/thumbs/';

@@ -12,15 +12,36 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  * Created by 473508 on 8/19/2016.
  */
 var core_1 = require('@angular/core');
+var angularfire2_1 = require('angularfire2');
+var user_data_service_1 = require('./../login/user-data.service');
+var observable_1 = require('rxjs/observable');
+// import { MASONRY_DIRECTIVES } from 'angular2-masonry';
 var SongListComponent = (function () {
-    function SongListComponent() {
+    function SongListComponent(af, userData) {
+        var _this = this;
+        this.af = af;
+        this.userData = userData;
+        userData.isLoggedIn.subscribe(function (isLoggedIn) {
+            if (isLoggedIn) {
+                alert('is logged in ');
+                _this.songList = af.database.list('/user-songs/' + userData.getUserId() + '/');
+            }
+            else {
+                alert('not logged in');
+                _this.songList = new observable_1.Observable();
+            }
+        });
+        console.log(this.userData.getUserId());
+        debugger;
     }
     SongListComponent = __decorate([
         core_1.Component({
             selector: 'song-list',
-            templateUrl: './app/components/song-list/song-list.html'
+            templateUrl: './app/components/song-list/song-list.html',
+            directives: [],
+            styleUrls: ['./app/components/song-list/song-list.style.css']
         }), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [angularfire2_1.AngularFire, user_data_service_1.UserData])
     ], SongListComponent);
     return SongListComponent;
 }());

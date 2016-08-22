@@ -3,4 +3,11 @@ body {
     font-family: monospace;
     background-color: #37cb90;
     margin: 0px !important;
+
+}
+
+.main-body {
+    margin: 0px !important;
+    font-family: 'Proxima Nova',sans-serif;
+    background-color: #6a549b;
 }
