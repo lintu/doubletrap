@@ -20,7 +20,6 @@ var UserData = (function () {
     UserData.prototype.setUserId = function (userId) {
         this.userId = userId;
         this.isLoggedIn.next(!(userId === ''));
-        debugger;
     };
     UserData.prototype.getUserId = function () {
         return this.userId;

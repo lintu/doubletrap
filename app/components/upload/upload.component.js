@@ -31,8 +31,19 @@ var UploadComponent = (function () {
             return;
         }
         this.uploadService.upload(this.fileToUpload).then(function (response) {
-            _this.items = _this.af.database.object('/user-songs/' + _this.userData.getUserId() + '/' + response['songId'] + '/');
-            _this.items.set(response);
+            var songDetails = response['tags'];
+            _this.items = _this.af.database.object('/user-songs/' + _this.userData.getUserId() + '/' + songDetails.songId + '/');
+            var savableSongDetails = {
+                title: songDetails.title || songDetails.originalName,
+                artist: songDetails.artist || 'Unknown',
+                album: songDetails.album || 'Unknown',
+                songUrl: songDetails.songUrl,
+                thumbUrl: songDetails.thumbUrl,
+                year: songDetails.year || 'Unknown',
+                songId: songDetails.songId,
+                size: songDetails.size
+            };
+            _this.items.set(savableSongDetails);
         }).catch(function (error) {
             alert(error);
         });

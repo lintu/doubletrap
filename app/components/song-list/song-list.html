@@ -2,6 +2,7 @@
     <ul class="">
         <li *ngFor="let song of songList | async" class="">
            {{song.title}} | {{song.artist}}
+            <img src="{{song.thumbUrl}}" alt="song" height="50" width="50">
         </li>
     </ul>
 </div>

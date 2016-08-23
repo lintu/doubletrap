@@ -17,18 +17,12 @@ import { Observable } from 'rxjs/observable';
 export class SongListComponent {
     songList: Observable<any>;
     constructor(private af: AngularFire, public userData: UserData) {
-
         userData.isLoggedIn.subscribe(isLoggedIn => {
            if(isLoggedIn) {
-               alert('is logged in ');
-               this.songList = af.database.list('/user-songs/' + userData.getUserId() + '/');
+                this.songList = af.database.list('/user-songs/' + userData.getUserId() + '/');
            }  else {
-               alert('not logged in');
                this.songList = new Observable();
            }
         });
-        console.log(this.userData.getUserId());
-
-        debugger;
     }
 }

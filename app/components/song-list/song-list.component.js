@@ -23,16 +23,12 @@ var SongListComponent = (function () {
         this.userData = userData;
         userData.isLoggedIn.subscribe(function (isLoggedIn) {
             if (isLoggedIn) {
-                alert('is logged in ');
                 _this.songList = af.database.list('/user-songs/' + userData.getUserId() + '/');
             }
             else {
-                alert('not logged in');
                 _this.songList = new observable_1.Observable();
             }
         });
-        console.log(this.userData.getUserId());
-        debugger;
     }
     SongListComponent = __decorate([
         core_1.Component({

@@ -16,7 +16,6 @@ export class UserData {
     setUserId (userId: string) {
         this.userId = userId;
         this.isLoggedIn.next(!(userId === ''));
-        debugger;
     }
     getUserId () {
         return this.userId;
