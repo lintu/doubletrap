@@ -11,6 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var angularfire2_1 = require('angularfire2');
 var user_data_service_1 = require('./../login/user-data.service');
+var song_service_1 = require('./../song-list/song.service');
+var data_service_1 = require('./../shared/data.service');
 var AppComponent = (function () {
     function AppComponent() {
     }
@@ -31,7 +33,9 @@ var AppComponent = (function () {
                     provider: angularfire2_1.AuthProviders.Google,
                     method: angularfire2_1.AuthMethods.Popup
                 }),
-                user_data_service_1.UserData
+                user_data_service_1.UserData,
+                song_service_1.SongService,
+                data_service_1.DataService
             ]
         }), 
         __metadata('design:paramtypes', [])

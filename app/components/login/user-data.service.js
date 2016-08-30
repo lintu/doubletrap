@@ -15,11 +15,11 @@ var core_1 = require('@angular/core');
 var Subject_1 = require('rxjs/Subject');
 var UserData = (function () {
     function UserData() {
-        this.isLoggedIn = new Subject_1.Subject();
+        this.isLoggedIn$ = new Subject_1.Subject();
     }
     UserData.prototype.setUserId = function (userId) {
         this.userId = userId;
-        this.isLoggedIn.next(!(userId === ''));
+        this.isLoggedIn$.next(!(userId === ''));
     };
     UserData.prototype.getUserId = function () {
         return this.userId;

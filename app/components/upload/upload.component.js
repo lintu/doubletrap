@@ -15,6 +15,7 @@ var core_1 = require('@angular/core');
 var angularfire2_1 = require('angularfire2');
 var upload_service_1 = require('./../upload/upload.service');
 var user_data_service_1 = require('./../login/user-data.service');
+var song_1 = require('./../song-list/song');
 var UploadComponent = (function () {
     function UploadComponent(uploadService, af, userData) {
         this.uploadService = uploadService;
@@ -33,17 +34,8 @@ var UploadComponent = (function () {
         this.uploadService.upload(this.fileToUpload).then(function (response) {
             var songDetails = response['tags'];
             _this.items = _this.af.database.object('/user-songs/' + _this.userData.getUserId() + '/' + songDetails.songId + '/');
-            var savableSongDetails = {
-                title: songDetails.title || songDetails.originalName,
-                artist: songDetails.artist || 'Unknown',
-                album: songDetails.album || 'Unknown',
-                songUrl: songDetails.songUrl,
-                thumbUrl: songDetails.thumbUrl,
-                year: songDetails.year || 'Unknown',
-                songId: songDetails.songId,
-                size: songDetails.size
-            };
-            _this.items.set(savableSongDetails);
+            var song = new song_1.Song(songDetails);
+            _this.items.set(song);
         }).catch(function (error) {
             alert(error);
         });

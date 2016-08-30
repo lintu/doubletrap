@@ -14,13 +14,14 @@ var app_component_1 = require('./app.component');
 var login_component_1 = require('../login/login.component');
 var upload_component_1 = require('../upload/upload.component');
 var song_list_component_1 = require("../song-list/song-list.component");
+var player_component_1 = require("../player/player.component");
 var AppModule = (function () {
     function AppModule() {
     }
     AppModule = __decorate([
         core_1.NgModule({
             imports: [platform_browser_1.BrowserModule],
-            declarations: [app_component_1.AppComponent, login_component_1.LoginComponent, upload_component_1.UploadComponent, song_list_component_1.SongListComponent],
+            declarations: [app_component_1.AppComponent, login_component_1.LoginComponent, upload_component_1.UploadComponent, song_list_component_1.SongListComponent, player_component_1.PlayerComponent],
             bootstrap: [app_component_1.AppComponent]
         }), 
         __metadata('design:paramtypes', [])
@@ -28,4 +29,6 @@ var AppModule = (function () {
     return AppModule;
 }());
 exports.AppModule = AppModule;
+//good practise to use providers in module level since it will be created only once
+//providers used at component level is created for every instance of component. 
 //# sourceMappingURL=app.module.js.map

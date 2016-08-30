@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { defaultFirebase, FIREBASE_PROVIDERS, firebaseAuthConfig, AuthProviders, AuthMethods} from 'angularfire2';
 import { UserData} from './../login/user-data.service';
+import { SongService } from './../song-list/song.service';
+import { DataService } from './../shared/data.service';
 
 @Component({
     selector: 'my-app',
@@ -18,7 +20,9 @@ import { UserData} from './../login/user-data.service';
             provider: AuthProviders.Google,
             method: AuthMethods.Popup
         }),
-        UserData
+        UserData,
+        SongService,
+        DataService
     ]
 })
 export class AppComponent {

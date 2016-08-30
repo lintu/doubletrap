@@ -5,6 +5,7 @@ import { Component } from '@angular/core';
 import { AngularFire, FirebaseObjectObservable } from 'angularfire2';
 import { UploadService } from './../upload/upload.service';
 import { UserData } from './../login/user-data.service';
+import { Song } from './../song-list/song';
 
 @Component({
     selector: 'upload',
@@ -31,18 +32,11 @@ export class UploadComponent {
         this.uploadService.upload(this.fileToUpload).then((response)=> {
             var songDetails = response['tags'];
             this.items = this.af.database.object('/user-songs/'+ this.userData.getUserId() + '/' + songDetails.songId + '/');
+            
+            var song = new Song(songDetails);
+            
+            this.items.set(song);
 
-            var savableSongDetails = {
-                title: songDetails.title || songDetails.originalName,
-                artist: songDetails.artist || 'Unknown',
-                album: songDetails.album || 'Unknown',
-                songUrl: songDetails.songUrl,
-                thumbUrl: songDetails.thumbUrl ,
-                year: songDetails.year || 'Unknown',
-                songId: songDetails.songId,
-                size: songDetails.size
-            };
-            this.items.set(savableSongDetails);
         }).catch(error => {
             alert(error);
         });

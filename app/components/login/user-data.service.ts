@@ -3,19 +3,19 @@
  */
 
 import { Injectable } from '@angular/core';
-import { Subject, } from 'rxjs/Subject';
+import { Subject } from 'rxjs/Subject';
 
 
 @Injectable()
 export class UserData {
     private userId: string;
-    isLoggedIn: Subject<boolean>;
+    isLoggedIn$: Subject<boolean>;
     constructor() {
-        this.isLoggedIn = new Subject<boolean>();
+        this.isLoggedIn$ = new Subject<boolean>();
     }
     setUserId (userId: string) {
         this.userId = userId;
-        this.isLoggedIn.next(!(userId === ''));
+        this.isLoggedIn$.next(!(userId === ''));
     }
     getUserId () {
         return this.userId;

@@ -15,13 +15,14 @@ var core_1 = require('@angular/core');
 var angularfire2_1 = require('angularfire2');
 var user_data_service_1 = require('./../login/user-data.service');
 var observable_1 = require('rxjs/observable');
-// import { MASONRY_DIRECTIVES } from 'angular2-masonry';
+var song_service_1 = require('./../song-list/song.service');
 var SongListComponent = (function () {
-    function SongListComponent(af, userData) {
+    function SongListComponent(af, userData, songService) {
         var _this = this;
         this.af = af;
         this.userData = userData;
-        userData.isLoggedIn.subscribe(function (isLoggedIn) {
+        this.songService = songService;
+        this.userDataSubscription = userData.isLoggedIn$.subscribe(function (isLoggedIn) {
             if (isLoggedIn) {
                 _this.songList = af.database.list('/user-songs/' + userData.getUserId() + '/');
             }
@@ -30,6 +31,12 @@ var SongListComponent = (function () {
             }
         });
     }
+    SongListComponent.prototype.setActive = function (songObj) {
+        this.songService.setActiveSong(songObj);
+    };
+    SongListComponent.prototype.ngOnDestroy = function () {
+        this.userDataSubscription.unsubscribe();
+    };
     SongListComponent = __decorate([
         core_1.Component({
             selector: 'song-list',
@@ -37,7 +44,7 @@ var SongListComponent = (function () {
             directives: [],
             styleUrls: ['./app/components/song-list/song-list.style.css']
         }), 
-        __metadata('design:paramtypes', [angularfire2_1.AngularFire, user_data_service_1.UserData])
+        __metadata('design:paramtypes', [angularfire2_1.AngularFire, user_data_service_1.UserData, song_service_1.SongService])
     ], SongListComponent);
     return SongListComponent;
 }());

@@ -1,11 +1,13 @@
 /**
  * Created by 473508 on 8/19/2016.
  */
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { AngularFire} from 'angularfire2';
 import { UserData } from './../login/user-data.service';
 import { Observable } from 'rxjs/observable';
-// import { MASONRY_DIRECTIVES } from 'angular2-masonry';
+import { Subscription }   from 'rxjs/Subscription';
+import { SongService }   from './../song-list/song.service';
+import { Song } from './../song-list/song';
 
 @Component({
     selector: 'song-list',
@@ -14,15 +16,24 @@ import { Observable } from 'rxjs/observable';
     styleUrls: ['./app/components/song-list/song-list.style.css']
 })
 
-export class SongListComponent {
-    songList: Observable<any>;
-    constructor(private af: AngularFire, public userData: UserData) {
-        userData.isLoggedIn.subscribe(isLoggedIn => {
+export class SongListComponent implements OnDestroy {
+    private songList: Observable<any>;
+    userDataSubscription: Subscription;
+    constructor(private af: AngularFire, private userData: UserData, private songService: SongService) {
+        this.userDataSubscription = userData.isLoggedIn$.subscribe(isLoggedIn => {
            if(isLoggedIn) {
                 this.songList = af.database.list('/user-songs/' + userData.getUserId() + '/');
            }  else {
                this.songList = new Observable();
            }
         });
+    }
+
+    setActive(songObj) {
+        this.songService.setActiveSong(songObj);
+    }
+
+    ngOnDestroy() {
+        this.userDataSubscription.unsubscribe();
     }
 }

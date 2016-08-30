@@ -14,7 +14,6 @@ var user_data_service_1 = require('./../login/user-data.service');
 var UploadService = (function () {
     function UploadService(userData) {
         this.userData = userData;
-        this.url = '/upload';
     }
     UploadService.prototype.upload = function (file) {
         var userId = this.userData.getUserId();
@@ -22,8 +21,6 @@ var UploadService = (function () {
             var fd = new FormData();
             fd.append('file', file);
             fd.append('userId', userId);
-            //fd.append('imageDataUri', imageDataUri);
-            //fd.append('imageFormat', imageFormat);
             var xhr = new XMLHttpRequest();
             xhr.open('post', '/upload?userId=' + userId + '', true);
             xhr.send(fd);

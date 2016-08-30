@@ -7,12 +7,10 @@ import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class UploadService {
-    url: string;
     constructor(public userData: UserData) {
-        this.url = '/upload';
     }
 
-    upload(file) {
+    upload(file): Promise<Object> {
 
         let userId = this.userData.getUserId();
 
@@ -21,9 +19,7 @@ export class UploadService {
             var fd = new FormData();
             fd.append('file', file);
             fd.append('userId', userId);
-            //fd.append('imageDataUri', imageDataUri);
-            //fd.append('imageFormat', imageFormat);
-
+    
             var xhr = new XMLHttpRequest();
 
             xhr.open('post', '/upload?userId='+ userId+ '', true);
@@ -42,7 +38,6 @@ export class UploadService {
             xhr.onprogress = function(event) {
                 if(event.lengthComputable) {
                     console.log("Progress: " + Math.round((event.loaded / event.total)*100));
-                    //this.uploadProgress =
                 }
             }
         });
