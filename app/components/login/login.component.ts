@@ -1,9 +1,10 @@
 /**
  * Created by Lintu on 14-08-2016.
  */
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { AngularFire } from 'angularfire2';
 import { UserData} from './../login/user-data.service';
+import { Subscription } from 'rxjs/Subscription'
 
 
 @Component({
@@ -11,11 +12,12 @@ import { UserData} from './../login/user-data.service';
     templateUrl : './app/components/login/login.component.html',
     styleUrls: ['./app/components/login/login.style.css']
 })
-export class LoginComponent {
+export class LoginComponent implements OnDestroy{
     loginText: string;
     profileImgUrl: string;
+    private loginSubscription: Subscription;
     constructor(private af: AngularFire, private userData: UserData) {
-        this.af.auth.subscribe(auth => {
+        this.loginSubscription = this.af.auth.subscribe(auth => {
             if(auth) {
                 userData.setUserId(auth.auth.uid);
                 this.loginText = auth.auth.displayName;
@@ -33,5 +35,9 @@ export class LoginComponent {
 
     logout() {
         this.af.auth.logout();
+    }
+
+    ngOnDestroy() {
+        this.loginSubscription.unsubscribe();
     }
 }

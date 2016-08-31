@@ -33,9 +33,13 @@ var UploadComponent = (function () {
         }
         this.uploadService.upload(this.fileToUpload).then(function (response) {
             var songDetails = response['tags'];
-            _this.items = _this.af.database.object('/user-songs/' + _this.userData.getUserId() + '/' + songDetails.songId + '/');
             var song = new song_1.Song(songDetails);
-            _this.items.set(song);
+            _this.userItems$ = _this.af.database.object('/all-songs/' + song.songId + '/');
+            _this.userItems$.set(song);
+            _this.userItems$ = _this.af.database.object('/user-data/' + _this.userData.getUserId() + '/songs/' + song.songId + '/');
+            _this.userItems$.set(song);
+            _this.defaultList$ = _this.af.database.list('/user-data/' + _this.userData.getUserId() + '/lists/default/songs/');
+            _this.defaultList$.push(song.songId);
         }).catch(function (error) {
             alert(error);
         });

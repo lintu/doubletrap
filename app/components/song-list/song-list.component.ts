@@ -1,7 +1,7 @@
 /**
  * Created by 473508 on 8/19/2016.
  */
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { AngularFire} from 'angularfire2';
 import { UserData } from './../login/user-data.service';
 import { Observable } from 'rxjs/observable';
@@ -16,24 +16,38 @@ import { Song } from './../song-list/song';
     styleUrls: ['./app/components/song-list/song-list.style.css']
 })
 
-export class SongListComponent implements OnDestroy {
-    private songList: Observable<any>;
+export class SongListComponent implements OnDestroy, OnInit {
+    @Input() playListId: string = '';
+    
+    private songList: Song[];
     userDataSubscription: Subscription;
+    songListSubscription: Subscription;
+    
     constructor(private af: AngularFire, private userData: UserData, private songService: SongService) {
-        this.userDataSubscription = userData.isLoggedIn$.subscribe(isLoggedIn => {
+    }
+
+    ngOnInit() {
+        this.userDataSubscription = this.userData.isLoggedIn$.subscribe(isLoggedIn => {
            if(isLoggedIn) {
-                this.songList = af.database.list('/user-songs/' + userData.getUserId() + '/');
+                this.songListSubscription = this.af.database.list('/user-data/'+ this.userData.getUserId() + '/songs/').subscribe(songList => {
+                    this.songList = <Song[]>songList;
+                });
            }  else {
-               this.songList = new Observable();
+               this.songList = [];
            }
         });
     }
 
-    setActive(songObj) {
+    setActive(songObj: Song, index: number, first: boolean, last: boolean) {
         this.songService.setActiveSong(songObj);
+        var nextIndex = index + 1 > this.songList.length ? 0 : index + 1;
+        var previousIndex = index- 1 < 0 ? this.songList.length - 1 : index -1;
+        this.songService.setNextSong(this.songList[nextIndex]);
+        this.songService.setPreviousSong(this.songList[previousIndex]);
     }
 
     ngOnDestroy() {
+        this.userDataSubscription.unsubscribe();
         this.userDataSubscription.unsubscribe();
     }
 }

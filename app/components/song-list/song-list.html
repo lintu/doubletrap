@@ -1,7 +1,7 @@
 <div>
     <ul class="">
-        <li *ngFor="let song of songList | async" class="">
-           <a (click)="setActive(song)"> {{song.title}} | {{song.artist}} </a>
+        <li *ngFor="let song of songList; let i = index" class="">
+           <a (click)="setActive(song, i)"> {{song.title}} | {{song.artist}} </a>
             <img src="{{song.thumbUrl}}" alt="song" height="50" width="50">
         </li>
     </ul>

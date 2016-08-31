@@ -2,7 +2,7 @@
  * Created by Lintu on 14-08-2016.
  */
 import { Component } from '@angular/core';
-import { AngularFire, FirebaseObjectObservable } from 'angularfire2';
+import { AngularFire, FirebaseObjectObservable, FirebaseListObservable } from 'angularfire2';
 import { UploadService } from './../upload/upload.service';
 import { UserData } from './../login/user-data.service';
 import { Song } from './../song-list/song';
@@ -15,7 +15,9 @@ import { Song } from './../song-list/song';
 })
 export class UploadComponent {
     fileToUpload: File;
-    items: FirebaseObjectObservable<any>;
+    userItems$: FirebaseObjectObservable<any>;
+    defaultList$: FirebaseListObservable<any>;
+    allItems$: FirebaseListObservable<any>
     constructor(private uploadService: UploadService, private af: AngularFire, public userData: UserData) {
 
     }
@@ -31,11 +33,15 @@ export class UploadComponent {
         }
         this.uploadService.upload(this.fileToUpload).then((response)=> {
             var songDetails = response['tags'];
-            this.items = this.af.database.object('/user-songs/'+ this.userData.getUserId() + '/' + songDetails.songId + '/');
-            
             var song = new Song(songDetails);
+
+            this.userItems$ = this.af.database.object('/all-songs/' + song.songId + '/');
+            this.userItems$.set(song);
+            this.userItems$ = this.af.database.object('/user-data/'+ this.userData.getUserId() + '/songs/' + song.songId + '/');
+            this.userItems$.set(song);
+            this.defaultList$ = this.af.database.list('/user-data/'+ this.userData.getUserId() + '/lists/default/songs/');
+            this.defaultList$.push(song.songId);
             
-            this.items.set(song);
 
         }).catch(error => {
             alert(error);

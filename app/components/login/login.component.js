@@ -19,7 +19,7 @@ var LoginComponent = (function () {
         var _this = this;
         this.af = af;
         this.userData = userData;
-        this.af.auth.subscribe(function (auth) {
+        this.loginSubscription = this.af.auth.subscribe(function (auth) {
             if (auth) {
                 userData.setUserId(auth.auth.uid);
                 _this.loginText = auth.auth.displayName;
@@ -36,6 +36,9 @@ var LoginComponent = (function () {
     };
     LoginComponent.prototype.logout = function () {
         this.af.auth.logout();
+    };
+    LoginComponent.prototype.ngOnDestroy = function () {
+        this.loginSubscription.unsubscribe();
     };
     LoginComponent = __decorate([
         core_1.Component({

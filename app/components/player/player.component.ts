@@ -6,7 +6,7 @@ import { UserData } from './../login/user-data.service';
 import { Observable } from 'rxjs/observable';
 import { Subscription } from 'rxjs/Subscription';
 import { SongService } from './../song-list/song.service';
-import {Song} from './../song-list/song';
+import {Song, ActiveSong} from './../song-list/song';
 import { DataService} from './../shared/data.service';
 
 @Component({
@@ -19,16 +19,22 @@ import { DataService} from './../shared/data.service';
 export class PlayerComponent implements OnInit, OnDestroy {
     private audioContext: AudioContext;
     private audioNodes: Object;
-    private volume:  Number;
-    public activeSong: Song;
-    public userLoginSubscription: Subscription;
-    public songServiceSubscription: Subscription;
-    public activeSongData: AudioBuffer;
+    private volume:  number;
+    public activeSong: ActiveSong;
+    private userLoginSubscription: Subscription;
+    private songServiceSubscription: Subscription;
+    private activeSongData: AudioBuffer;
+    private songStartTime: number;
+    private songAnalyserThread: any;
+    private isPaused: boolean;
+
     constructor(public userData: UserData, private songService: SongService, private dataService: DataService) {
         this.audioContext = new AudioContext();
         this.audioNodes = {};
         this.volume = 10.0;
-        this.activeSong = new Song();
+        this.activeSong = new ActiveSong();
+        this.isPaused = false;
+        this.songAnalyserThread = null;
         this.userLoginSubscription = userData.isLoggedIn$.subscribe(isLoggedIn => {
            if(isLoggedIn) {
                 //TODO do thing onlogin
@@ -55,7 +61,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
     private processSongArrayBuffer(audioData: ArrayBuffer) {
         this.audioContext.decodeAudioData(audioData, buffer => {
-            console.log('done decoding');
             this.activeSongData = buffer;
             this.activeSong.duration = buffer.duration;
             this.start(0);
@@ -108,17 +113,47 @@ export class PlayerComponent implements OnInit, OnDestroy {
             this.audioNodes['source'] = this.audioContext.createBufferSource();
             this.audioNodes['source'].buffer = this.activeSongData;
             
-            this.connectAudioNodes();
-
+            this.audioNodes['source'].connect(this.audioNodes['splitter']);
+            
+            this.activeSong.startTime = this.audioContext.currentTime - startFrom;
             this.audioNodes['source'].start(0, startFrom);
+            
+            this.startSongAnalyser();
+            
             this.audioNodes['source'].loop = false;
         }
     }
+    cancelSongAnalyser() {
+        if(this.songAnalyserThread !== null) {
+            clearInterval(this.songAnalyserThread);
+            this.songAnalyserThread = null;
+        }
+    }
+    startSongAnalyser() {
+        this.songAnalyser();
+        this.songAnalyserThread = setInterval(this.songAnalyser, 1000);
+    }
+    //thread function check song property changes
+    songAnalyser() {
+        debugger;
+        if(this.activeSong.currentTime >= this.activeSong.duration) {
+
+        }
+        this.activeSong.currentTime = Math.floor(this.audioContext.currentTime - this.activeSong.startTime);
+    }
     resume() {
-        alert('start playing');
+        this.start(this.activeSong.currentTime);
+        this.isPaused = false;
+    }
+    pause() {
+        if(this.audioNodes['source'].buffer) {
+            this.audioNodes['source'].stop();
+        }
+        this.cancelSongAnalyser();
+        this.isPaused = true;
     }
     previous() {
-        alert('previious');
+        alert('previous');
     }
     next() {
         alert('start playing');
