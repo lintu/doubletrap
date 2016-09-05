@@ -7,12 +7,11 @@ import { UserData } from './../login/user-data.service';
 import { Observable } from 'rxjs/observable';
 import { Subscription }   from 'rxjs/Subscription';
 import { SongService }   from './../song-list/song.service';
-import { Song } from './../song-list/song';
+import { Song, ActiveSong } from './../song-list/song';
 
 @Component({
     selector: 'song-list',
     templateUrl: './app/components/song-list/song-list.html',
-    directives: [],
     styleUrls: ['./app/components/song-list/song-list.style.css']
 })
 
@@ -22,7 +21,8 @@ export class SongListComponent implements OnDestroy, OnInit {
     private songList: Song[];
     userDataSubscription: Subscription;
     songListSubscription: Subscription;
-    
+    setNextSongSubscription: Subscription;
+
     constructor(private af: AngularFire, private userData: UserData, private songService: SongService) {
     }
 
@@ -36,18 +36,40 @@ export class SongListComponent implements OnDestroy, OnInit {
                this.songList = [];
            }
         });
+        
+        this.songService.activeSong$.subscribe(activeSong => {
+            if(activeSong.playListId === this.playListId) {
+                //yay playing from my list
+                //make the changes for now playing
+            } else {
+                //i am not used now
+                //reset any changes for now playing
+            }
+        });
+
+        this.songService.nextSongIdentifier$.subscribe(activeSong => {
+            if(activeSong.playListId === this.playListId) {
+                this.songService.setNextSong(this.getNextSong(activeSong.songId))
+            }
+        })
     }
 
-    setActive(songObj: Song, index: number, first: boolean, last: boolean) {
-        this.songService.setActiveSong(songObj);
-        var nextIndex = index + 1 > this.songList.length ? 0 : index + 1;
-        var previousIndex = index- 1 < 0 ? this.songList.length - 1 : index -1;
-        this.songService.setNextSong(this.songList[nextIndex]);
-        this.songService.setPreviousSong(this.songList[previousIndex]);
+    getNextSong (currentSongId): Song {
+        var songListLength = this.songList.length;
+        for(var i=0; i< songListLength; i++) {
+            if(this.songList[i].songId === currentSongId) {
+                var nextIndex = i + 1 >= songListLength ? 0 : i + 1;
+                return this.songList[nextIndex];
+            }
+        }
+    }
+    setActive(songObj: Song, index: number) {
+        this.songService.setActiveSong(songObj, this.playListId);
     }
 
     ngOnDestroy() {
         this.userDataSubscription.unsubscribe();
         this.userDataSubscription.unsubscribe();
+        this.setNextSongSubscription.unsubscribe();
     }
 }

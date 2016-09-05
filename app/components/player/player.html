@@ -1,7 +1,18 @@
 <div class="player-component">
-    {{activeSong.title}}  and duration is {{activeSong.duration}}
+    {{activeSong.title}}  and duration is {{secondsToDuration(activeSong.duration)}}
     <button type="button" (click)="previous()">Previous</button>
     <button type="button" (click)="pause()" *ngIf="!isPaused" >Pause</button>
     <button type="button" (click)="resume()" *ngIf="isPaused" >Resume</button>
     <button type="button" (click)="next()">Next</button>
+
+    <div id="player-seeker">
+        <div>
+            <input type="range" class="plain-range" id="playback-range" name="track" min="0"
+                [max]="activeSong.duration" [value]="trackPosition"  (change)="trackPositionChanged($event.target.value)"
+            >
+            {{secondsToDuration(trackPosition)}}
+        </div>
+        <button md-raised-button color="primary">SNIFF</button>
+            <button md-button>FLAT</button>
+    </div>
 </div>

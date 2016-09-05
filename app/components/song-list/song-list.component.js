@@ -34,17 +34,34 @@ var SongListComponent = (function () {
                 _this.songList = [];
             }
         });
+        this.songService.activeSong$.subscribe(function (activeSong) {
+            if (activeSong.playListId === _this.playListId) {
+            }
+            else {
+            }
+        });
+        this.songService.nextSongIdentifier$.subscribe(function (activeSong) {
+            if (activeSong.playListId === _this.playListId) {
+                _this.songService.setNextSong(_this.getNextSong(activeSong.songId));
+            }
+        });
     };
-    SongListComponent.prototype.setActive = function (songObj, index, first, last) {
-        this.songService.setActiveSong(songObj);
-        debugger;
-        //set next 
-        //fetch the item from this.songList
-        //set previous
+    SongListComponent.prototype.getNextSong = function (currentSongId) {
+        var songListLength = this.songList.length;
+        for (var i = 0; i < songListLength; i++) {
+            if (this.songList[i].songId === currentSongId) {
+                var nextIndex = i + 1 >= songListLength ? 0 : i + 1;
+                return this.songList[nextIndex];
+            }
+        }
+    };
+    SongListComponent.prototype.setActive = function (songObj, index) {
+        this.songService.setActiveSong(songObj, this.playListId);
     };
     SongListComponent.prototype.ngOnDestroy = function () {
         this.userDataSubscription.unsubscribe();
         this.userDataSubscription.unsubscribe();
+        this.setNextSongSubscription.unsubscribe();
     };
     __decorate([
         core_1.Input(), 
@@ -54,7 +71,6 @@ var SongListComponent = (function () {
         core_1.Component({
             selector: 'song-list',
             templateUrl: './app/components/song-list/song-list.html',
-            directives: [],
             styleUrls: ['./app/components/song-list/song-list.style.css']
         }), 
         __metadata('design:paramtypes', [angularfire2_1.AngularFire, user_data_service_1.UserData, song_service_1.SongService])

@@ -1,8 +1,8 @@
 {
   "resolution": "main",
   "tree": {
-    "src": "D:\\CodeBase\\doubletrap-master\\doubletrap\\node_modules\\angularfire2\\firebase3.d.ts",
+    "src": "d:\\CodeBase\\doubletrap-master\\doubletrap\\node_modules\\angularfire2\\firebase3.d.ts",
     "raw": "file:node_modules/angularfire2/firebase3.d.ts",
-    "typings": "D:\\CodeBase\\doubletrap-master\\doubletrap\\node_modules\\angularfire2\\firebase3.d.ts"
+    "typings": "d:\\CodeBase\\doubletrap-master\\doubletrap\\node_modules\\angularfire2\\firebase3.d.ts"
   }
 }

@@ -9,10 +9,10 @@ import { SongService } from './../song-list/song.service';
 import {Song, ActiveSong} from './../song-list/song';
 import { DataService} from './../shared/data.service';
 
+
 @Component({
     selector: 'player',
     templateUrl: './app/components/player/player.html',
-    directives: [],
     styleUrls: ['./app/components/player/player.style.css']
 })
 
@@ -27,6 +27,8 @@ export class PlayerComponent implements OnInit, OnDestroy {
     private songStartTime: number;
     private songAnalyserThread: any;
     private isPaused: boolean;
+    public trackPosition: number;
+    
 
     constructor(public userData: UserData, private songService: SongService, private dataService: DataService) {
         this.audioContext = new AudioContext();
@@ -34,6 +36,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
         this.volume = 10.0;
         this.activeSong = new ActiveSong();
         this.isPaused = false;
+        this.trackPosition = 0;
         this.songAnalyserThread = null;
         this.userLoginSubscription = userData.isLoggedIn$.subscribe(isLoggedIn => {
            if(isLoggedIn) {
@@ -55,6 +58,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
     }
     ngOnInit() {
+        setInterval(()=> {
+            console.log()
+        })
         this.createAudioNodes();
         this.connectAudioNodes();
     }
@@ -63,6 +69,8 @@ export class PlayerComponent implements OnInit, OnDestroy {
         this.audioContext.decodeAudioData(audioData, buffer => {
             this.activeSongData = buffer;
             this.activeSong.duration = buffer.duration;
+            this.activeSong.durationText = this.secondsToDuration(buffer.duration);
+            this.trackPosition = 0;
             this.start(0);
         });
     }
@@ -109,19 +117,33 @@ export class PlayerComponent implements OnInit, OnDestroy {
             if (this.audioNodes['source'].buffer) {
                 this.audioNodes['source'].stop();
             }
-
+            this.cancelSongAnalyser();
             this.audioNodes['source'] = this.audioContext.createBufferSource();
             this.audioNodes['source'].buffer = this.activeSongData;
             
             this.audioNodes['source'].connect(this.audioNodes['splitter']);
             
             this.activeSong.startTime = this.audioContext.currentTime - startFrom;
+            
             this.audioNodes['source'].start(0, startFrom);
             
             this.startSongAnalyser();
             
             this.audioNodes['source'].loop = false;
         }
+    }
+
+    private stop() {
+        if(this.audioNodes['source']) {
+            this.audioNodes['source'].stop();
+        }
+        this.activeSong.currentTime = 0;
+        this.trackPosition = 0;
+        this.isPaused = true; // logicall ???
+    }
+
+    trackPositionChanged(newTrackPosition: number) {
+        this.start(newTrackPosition);
     }
     cancelSongAnalyser() {
         if(this.songAnalyserThread !== null) {
@@ -131,18 +153,22 @@ export class PlayerComponent implements OnInit, OnDestroy {
     }
     startSongAnalyser() {
         this.songAnalyser();
-        this.songAnalyserThread = setInterval(this.songAnalyser, 1000);
+        this.songAnalyserThread = setInterval(()=>this.songAnalyser(), 1000);
     }
     //thread function check song property changes
     songAnalyser() {
-        debugger;
-        if(this.activeSong.currentTime >= this.activeSong.duration) {
 
+        if(this.trackPosition >= this.activeSong.duration) {
+            this.songService.setActiveSong(undefined, undefined); 
+            this.stop();
+            this.cancelSongAnalyser();
+        } else {
+            this.activeSong.currentTime = Math.floor(this.audioContext.currentTime - this.activeSong.startTime);
+            this.trackPosition = Math.floor(this.audioContext.currentTime - this.activeSong.startTime);
         }
-        this.activeSong.currentTime = Math.floor(this.audioContext.currentTime - this.activeSong.startTime);
     }
     resume() {
-        this.start(this.activeSong.currentTime);
+        this.start(this.trackPosition);
         this.isPaused = false;
     }
     pause() {
@@ -153,13 +179,24 @@ export class PlayerComponent implements OnInit, OnDestroy {
         this.isPaused = true;
     }
     previous() {
-        alert('previous');
+        this.songService.setPreviousSongActive();
     }
     next() {
-        alert('start playing');
+        this.songService.setActiveSong(undefined, undefined);
     }
-
+    public secondsToDuration(totalSeconds: number) {
+        totalSeconds = Number(totalSeconds.toFixed(0));
+        var h = Math.floor(totalSeconds / 3600);
+        var m = Math.floor(totalSeconds % 3600 / 60);
+        var s = Math.floor(totalSeconds % 3600 % 60);
+        return ((h > 0 ? h + ":" + (m < 10 ? "0" : "") : "") + m + ":" + (s < 10 ? "0" : "") + s);
+        
+    }
+    pad(num) {
+        return ("0"+num).slice(-2);
+    }
     ngOnDestroy() {
+        this.cancelSongAnalyser();
         this.userLoginSubscription.unsubscribe();
         this.songServiceSubscription.unsubscribe();
     }

@@ -7,6 +7,8 @@ import {SongListComponent} from "../song-list/song-list.component";
 import {PlayerComponent} from "../player/player.component";
 
 
+
+
 @NgModule({
     imports:      [ BrowserModule ],
     declarations: [ AppComponent, LoginComponent, UploadComponent, SongListComponent, PlayerComponent ],
