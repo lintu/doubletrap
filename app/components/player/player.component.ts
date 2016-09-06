@@ -47,10 +47,8 @@ export class PlayerComponent implements OnInit, OnDestroy {
         });
 
         this.songServiceSubscription = songService.activeSong$.subscribe((activeSong) => {
-            this.activeSong = activeSong;
-            
-            this.dataService.getSong(this.activeSong.songUrl).then((audioData)=>{
-                this.processSongArrayBuffer(audioData);
+            this.dataService.getSong(activeSong.songUrl).then((audioData)=>{
+                this.processSongArrayBuffer(audioData, activeSong);
             }).catch((response) => {
                 alert(response);
             });
@@ -58,19 +56,17 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
     }
     ngOnInit() {
-        setInterval(()=> {
-            console.log()
-        })
         this.createAudioNodes();
         this.connectAudioNodes();
     }
 
-    private processSongArrayBuffer(audioData: ArrayBuffer) {
+    private processSongArrayBuffer(audioData: ArrayBuffer, activeSong: ActiveSong) {
         this.audioContext.decodeAudioData(audioData, buffer => {
+            this.trackPosition = 0;
+            this.activeSong = activeSong;
             this.activeSongData = buffer;
             this.activeSong.duration = buffer.duration;
             this.activeSong.durationText = this.secondsToDuration(buffer.duration);
-            this.trackPosition = 0;
             this.start(0);
         });
     }
@@ -126,7 +122,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
             this.activeSong.startTime = this.audioContext.currentTime - startFrom;
             
             this.audioNodes['source'].start(0, startFrom);
-            
+            this.isPaused = false;
             this.startSongAnalyser();
             
             this.audioNodes['source'].loop = false;
@@ -137,6 +133,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
         if(this.audioNodes['source']) {
             this.audioNodes['source'].stop();
         }
+        this.cancelSongAnalyser();
         this.activeSong.currentTime = 0;
         this.trackPosition = 0;
         this.isPaused = true; // logicall ???
@@ -163,8 +160,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
             this.stop();
             this.cancelSongAnalyser();
         } else {
-            this.activeSong.currentTime = Math.floor(this.audioContext.currentTime - this.activeSong.startTime);
+            this.activeSong.currentTime = Math.round(this.audioContext.currentTime - this.activeSong.startTime);
             this.trackPosition = Math.floor(this.audioContext.currentTime - this.activeSong.startTime);
+            console.log(this.trackPosition);
         }
     }
     resume() {
@@ -185,12 +183,15 @@ export class PlayerComponent implements OnInit, OnDestroy {
         this.songService.setActiveSong(undefined, undefined);
     }
     public secondsToDuration(totalSeconds: number) {
-        totalSeconds = Number(totalSeconds.toFixed(0));
-        var h = Math.floor(totalSeconds / 3600);
-        var m = Math.floor(totalSeconds % 3600 / 60);
-        var s = Math.floor(totalSeconds % 3600 % 60);
+        try {
+            totalSeconds = Number(totalSeconds.toFixed(0));
+            var h = Math.floor(totalSeconds / 3600);
+            var m = Math.floor(totalSeconds % 3600 / 60);
+            var s = Math.floor(totalSeconds % 3600 % 60);
+        } catch(error) {
+            console.log('totalSeconds:' + totalSeconds);
+        }
         return ((h > 0 ? h + ":" + (m < 10 ? "0" : "") : "") + m + ":" + (s < 10 ? "0" : "") + s);
-        
     }
     pad(num) {
         return ("0"+num).slice(-2);

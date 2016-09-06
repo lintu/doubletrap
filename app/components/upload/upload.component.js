@@ -28,7 +28,7 @@ var UploadComponent = (function () {
     UploadComponent.prototype.upload = function () {
         var _this = this;
         if (!this.fileToUpload) {
-            alert('please select a file');
+            alert('Please select a file');
             return;
         }
         this.uploadService.upload(this.fileToUpload).then(function (response) {

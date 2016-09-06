@@ -28,7 +28,7 @@ export class UploadComponent {
 
     upload() {
         if(!this.fileToUpload) {
-            alert('please select a file');
+            alert('Please select a file');
             return;
         }
         this.uploadService.upload(this.fileToUpload).then((response)=> {
@@ -41,8 +41,6 @@ export class UploadComponent {
             this.userItems$.set(song);
             this.defaultList$ = this.af.database.list('/user-data/'+ this.userData.getUserId() + '/lists/default/songs/');
             this.defaultList$.push(song.songId);
-            
-
         }).catch(error => {
             alert(error);
         });

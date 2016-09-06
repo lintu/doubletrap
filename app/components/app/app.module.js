@@ -15,12 +15,13 @@ var login_component_1 = require('../login/login.component');
 var upload_component_1 = require('../upload/upload.component');
 var song_list_component_1 = require("../song-list/song-list.component");
 var player_component_1 = require("../player/player.component");
+var forms_1 = require('@angular/forms');
 var AppModule = (function () {
     function AppModule() {
     }
     AppModule = __decorate([
         core_1.NgModule({
-            imports: [platform_browser_1.BrowserModule],
+            imports: [platform_browser_1.BrowserModule, forms_1.FormsModule],
             declarations: [app_component_1.AppComponent, login_component_1.LoginComponent, upload_component_1.UploadComponent, song_list_component_1.SongListComponent, player_component_1.PlayerComponent],
             bootstrap: [app_component_1.AppComponent]
         }), 

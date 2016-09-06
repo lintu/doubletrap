@@ -5,12 +5,12 @@ import { LoginComponent } from '../login/login.component';
 import { UploadComponent } from '../upload/upload.component';
 import {SongListComponent} from "../song-list/song-list.component";
 import {PlayerComponent} from "../player/player.component";
-
+import { FormsModule } from '@angular/forms';
 
 
 
 @NgModule({
-    imports:      [ BrowserModule ],
+    imports:      [ BrowserModule, FormsModule ],
     declarations: [ AppComponent, LoginComponent, UploadComponent, SongListComponent, PlayerComponent ],
     bootstrap:    [ AppComponent ]
 })
